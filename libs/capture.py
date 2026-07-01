@@ -11,9 +11,12 @@ class PiCamera:
         self.picam2.configure(capture_config)
         self.picam2.start()
         time.sleep(0.5)  
+        logger.info("Camera initialized")
 
     def capture_frame(self):
         frame = self.picam2.capture_array()
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
         return frame
 
 

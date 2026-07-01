@@ -7,12 +7,11 @@ class PoseEstimator:
         self.conf = conf
         self.interpreter = Interpreter(model_path=conf["MODEL_PATH"], num_threads=4)
         self.output_resolution = conf["OUTPUT_RESOLUTION"]
+        logger.info("Pose Estimator initialized")
 
     def preprocess(self, frame):
-
         # movenet expects 4d tensor with shape: [1, 192, 192, channels]
         input_image = cv2.resize(frame, (192, 192))
-        input_image = cv2.cvtColor(input_image, cv2.COLOR_BGR2RGB)
         input_image = numpy.expand_dims(input_image, axis=0)
         input_image = input_image.astype(numpy.int8)
         input_image = (input_image - 127.5) / 127.5
