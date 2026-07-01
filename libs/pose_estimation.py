@@ -20,4 +20,12 @@ class PoseEstimator:
         return input_image
         
     def estimate_pose(self, frame):
-        
+        self.interpreter.set_input_details(0, shape=frame.shape)
+        self.interpreter.set_input(frame)
+        self.interpreter.invoke()
+        outputs = self.interpreter.get_output_details(0)
+        # Extract the keypoints
+        keypoints = outputs['output_0'].numpy()
+        # Return the keypoints
+        return keypoints
+
