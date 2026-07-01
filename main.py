@@ -1,50 +1,74 @@
-"""Ts is all gpt'd btw"""
-
-import subprocess
+from picamera2 import Picamera2
 import cv2
-import numpy as np
+import time
+import os
 
-# Define frame dimensions (match these in rpicam-vid and numpy)
-WIDTH, HEIGHT = 640, 480
-FRAME_SIZE = WIDTH * HEIGHT * 3  # 3 bytes per pixel for RGB
+# =========================
+# SETTINGS
+# =========================
+WIDTH = 640
+HEIGHT = 480
 
-# Construct the rpicam command to output raw RGB data to stdout
-cmd = [
-    'rpicam-vid',
-    '-t', '0',               # Run indefinitely
-    '--width', str(WIDTH),
-    '--height', str(HEIGHT),
-    '--inline',              # Force inline headers (useful for streams)
-    '--codec', 'yuv420',     # YUV is faster, but let's use raw RGB for easy mapping
-    '--codec', 'rgb',        # Request raw RGB frames
-    '-o', '-'                # Pipe output to stdout
-]
+SAVE_LATEST_FRAME = True          # saves /tmp/latest.jpg
+RECORD_VIDEO = False              # set True to record mp4
+VIDEO_PATH = "output.mp4"
+FPS = 30
 
-# Start the subprocess
-pipe = subprocess.Popen(cmd, stdout=subprocess.PIPE, bufsize=10**7)
+# =========================
+# INIT CAMERA
+# =========================
+picam2 = Picamera2()
 
-print("Starting video stream... Press 'q' to quit.")
+config = picam2.create_video_configuration(
+    main={"format": "BGR888", "size": (WIDTH, HEIGHT)}
+)
+picam2.configure(config)
+picam2.start()
+
+time.sleep(0.2)
+
+# =========================
+# VIDEO WRITER (optional)
+# =========================
+writer = None
+if RECORD_VIDEO:
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+    writer = cv2.VideoWriter(VIDEO_PATH, fourcc, FPS, (WIDTH, HEIGHT))
+
+print("Starting headless capture. Press Ctrl+C to stop.")
+
+# =========================
+# MAIN LOOP
+# =========================
+frame_count = 0
+start_time = time.time()
 
 try:
-    # Read a single frame's worth of bytes from stdout
-    raw_image = pipe.stdout.read(FRAME_SIZE)
-    
-    if len(raw_image) != FRAME_SIZE:
-        print("No Image Recieved!")
+    while True:
+        frame = picam2.capture_array()
 
-    # Convert raw bytes into a numpy array
-    frame = np.frombuffer(raw_image, dtype=np.uint8).reshape((HEIGHT, WIDTH, 3))
-    
-    # OpenCV uses BGR, so convert RGB to BGR
-    frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-    
-    # Process frame with OpenCV
-    cv2.imshow('rpicam-vid Bridge', frame_bgr)
-    cv2.imwrite('test.png', frame)
-    
+        # frame is already BGR because we used BGR888
+        if SAVE_LATEST_FRAME:
+            cv2.imwrite("/tmp/latest.jpg", frame)
+
+        if RECORD_VIDEO and writer is not None:
+            writer.write(frame)
+
+        frame_count += 1
+
+        # FPS print every 2 seconds
+        if frame_count % 60 == 0:
+            elapsed = time.time() - start_time
+            fps = frame_count / elapsed
+            print(f"FPS: {fps:.2f}")
+
+except KeyboardInterrupt:
+    print("\nStopping...")
+
 finally:
-    # Safely terminate the pipe and window
-    pipe.terminate()
-    cv2.destroyAllWindows()
+    picam2.stop()
 
+    if writer is not None:
+        writer.release()
 
+    print("Clean exit.")
