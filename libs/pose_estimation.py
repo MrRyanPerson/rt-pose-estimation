@@ -34,17 +34,5 @@ class PoseEstimator:
         # Get output
         output_data = self.interpreter.get_tensor(output_details[0]["index"])[0]
 
-        keypoints = []
-
-        # Most pose models output [num_keypoints, 3] -> y, x, score
-        for kp in output_data:
-            y, x, conf = kp
-
-            keypoints.append({
-                "x": float(x),
-                "y": float(y),
-                "confidence": float(conf)
-            })
-
-        return keypoints
+        return output_data
 
