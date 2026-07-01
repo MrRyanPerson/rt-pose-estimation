@@ -34,5 +34,11 @@ class PoseEstimator:
         # Get output
         output_data = self.interpreter.get_tensor(output_details[0]["index"])[0]
 
+        output_data = numpy.array(output_data)
+
+        print(output_data.shape)
+
         return output_data
+    
+    def draw_keypoints(self, frame, keypoints):
 
