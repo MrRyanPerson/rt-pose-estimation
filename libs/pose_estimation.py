@@ -14,9 +14,10 @@ class PoseEstimator:
         input_image = cv2.resize(frame, (192, 192))
         input_image = cv2.cvtColor(input_image, cv2.COLOR_BGR2RGB)
         input_image = numpy.expand_dims(input_image, axis=0)
-        input_image = input_image.astype(numpy.float32)
+        input_image = input_image.astype(numpy.int8)
         input_image = (input_image - 127.5) / 127.5
 
         return input_image
         
+    def estimate_pose(self, frame):
         
