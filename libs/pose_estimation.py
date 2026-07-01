@@ -1,6 +1,6 @@
 from libs.libraries import load_dependencies
 
-PiCamera2, Interpreter, cv2 = load_dependencies()
+PiCamera2, Interpreter, cv2, numpy = load_dependencies()
 
 class PoseEstimator:
     def __init__(self, conf):
@@ -9,5 +9,14 @@ class PoseEstimator:
         self.output_resolution = conf["OUTPUT_RESOLUTION"]
 
     def preprocess(self, frame):
+
+        # movenet expects 4d tensor with shape: [1, 192, 192, channels]
+        input_image = cv2.resize(frame, (192, 192))
+        input_image = cv2.cvtColor(input_image, cv2.COLOR_BGR2RGB)
+        input_image = numpy.expand_dims(input_image, axis=0)
+        input_image = input_image.astype(numpy.float32)
+        input_image = (input_image - 127.5) / 127.5
+
+        return input_image
         
         
