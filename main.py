@@ -16,6 +16,9 @@ def main():
     logger.info("Camera initialized")
     pose_estimator = PoseEstimator(conf)
     logger.info("Pose Estimator initialized")
-    
+
+    frame = camera.capture_frame()
+    cv2.imwrite("frame.jpg", frame)
+
 if __name__ == "__main__":
     main()
