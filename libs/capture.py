@@ -10,7 +10,7 @@ class PiCamera:
         capture_config = self.picam2.create_still_configuration({"size": self.conf["CAMERA_RESOLUTION"]})
         self.picam2.configure(capture_config)
         self.picam2.start()
-        time.sleep(0.5)  
+        time.sleep(2)  
         logger.info("Camera initialized")
 
     def capture_frame(self):
