@@ -1,6 +1,6 @@
 from libs.libraries import load_dependencies
 
-PiCamera2, Interpreter, cv2, numpy = load_dependencies()
+PiCamera2, Interpreter, cv2, numpy, logger = load_dependencies()
 
 class PiCamera:
     def __init__(self, conf):

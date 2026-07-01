@@ -1,6 +1,6 @@
 from libs.libraries import load_dependencies
 
-PiCamera2, Interpreter, cv2, numpy = load_dependencies()
+PiCamera2, Interpreter, cv2, numpy, logger = load_dependencies()
 
 class PoseEstimator:
     def __init__(self, conf):
@@ -18,7 +18,7 @@ class PoseEstimator:
         input_image = (input_image - 127.5) / 127.5
 
         return input_image
-        
+
     def estimate_pose(self, frame):
         self.interpreter.set_input_details(0, shape=frame.shape)
         self.interpreter.set_input(frame)
