@@ -11,6 +11,7 @@ class PoseEstimator:
 
     def preprocess(self, frame):
         # movenet expects 4d tensor with shape: [1, 192, 192, channels]
+        input_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         input_image = cv2.resize(frame, (192, 192))
         input_image = numpy.expand_dims(input_image, axis=0)
         input_image = input_image.astype(numpy.int8)

@@ -15,8 +15,7 @@ class PiCamera:
 
     def capture_frame(self):
         frame = self.picam2.capture_array()
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
+        
         return frame
 
 
