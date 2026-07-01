@@ -7,10 +7,11 @@ class PoseEstimator:
         self.conf = conf
         self.interpreter = Interpreter(model_path=conf["MODEL_PATH"], num_threads=4)
         self.output_resolution = conf["OUTPUT_RESOLUTION"]
+        self.interpreter.allocate_tensors()
         logger.info("Pose Estimator initialized")
 
     def preprocess(self, frame):
-        
+
         input_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         input_image = cv2.resize(input_image, (192, 192))
         input_image = numpy.expand_dims(input_image, axis=0)
