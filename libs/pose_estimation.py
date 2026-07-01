@@ -38,17 +38,18 @@ class PoseEstimator:
 
         print(output_data.shape)
 
-        if output_data.shape == (1, 1, 17, 3):
-            keypoints = output_data[0, 0]
-            for kp in keypoints:
-                # Extract x and y coordinates of the keypoint
-                x = int(kp[1] * frame.shape[1])
-                y = int(kp[0] * frame.shape[0])
+        keypoints = []
 
-                print(f"Keypoint: ({x}, {y})")
+        for y, x, score in output_data:
+            keypoints.append({
+                "x": float(x),
+                "y": float(y),
+                "confidence": float(score),
+            })
 
 
 
-        return output_data
+
+        return keypoints
     
 
