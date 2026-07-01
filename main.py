@@ -16,7 +16,12 @@ def main():
     pose_estimator = PoseEstimator(conf)
 
     frame = camera.capture_frame()
-    cv2.imwrite("frame.jpg", frame)
+
+    preprocessed_frame = pose_estimator.preprocess(frame)
+
+    keypoints = pose_estimator.estimate_pose(preprocessed_frame)
+
+    print(keypoints)
 
 if __name__ == "__main__":
     main()
