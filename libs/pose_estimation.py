@@ -21,35 +21,15 @@ class PoseEstimator:
 
 
     def estimate_pose(self, frame):
-        # Get input/output details
-        input_details = self.interpreter.get_input_details()
-        output_details = self.interpreter.get_output_details()
 
-        input_index = input_details[0]["index"]
+        input_image = self.preprocess(frame)
 
-        # Set input tensor
-        self.interpreter.set_tensor(input_index, frame)
+        self.interpreter.set_tensor(self.interpreter.get_input_details()[0]['index'], input_image)
         self.interpreter.invoke()
+        keypoints_with_scores = self.interpreter.get_tensor(self.interpreter.get_output_details()[0]['index'])
 
-        # Get output
-        output_data = self.interpreter.get_tensor(output_details[0]["index"])[0]
+        print("Keypoints with scores:", keypoints_with_scores)
 
-        output_data = numpy.array(output_data)
-
-        print(output_data.shape)
-
-        keypoints = []
-
-        for y, x, score in output_data:
-            keypoints.append({
-                "x": float(x),
-                "y": float(y),
-                "confidence": float(score),
-            })
-
-
-
-
-        return keypoints
+        return keypoints_with_scores
     
 

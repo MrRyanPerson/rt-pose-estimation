@@ -17,9 +17,8 @@ def main():
 
     frame = camera.capture_frame()
 
-    preprocessed_frame = pose_estimator.preprocess(frame)
 
-    keypoints = pose_estimator.estimate_pose(preprocessed_frame)
+    keypoints = pose_estimator.estimate_pose(frame)
 
     print(keypoints)
 
