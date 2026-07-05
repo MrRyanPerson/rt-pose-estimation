@@ -6,6 +6,7 @@ logger.info("Loaded Dependencies")
 from libs.capture import PiCamera
 from libs.pose_estimation import PoseEstimator
 from libs.conf import get_conf
+from libs.output import Output
 
 def main():
     logger.add("logs/app.log", rotation="100 MB")    
@@ -14,12 +15,15 @@ def main():
 
     camera = PiCamera(conf)
     pose_estimator = PoseEstimator(conf)
+    output = Output(conf)
 
     frame = camera.capture_frame()
 
     keypoints = pose_estimator.estimate_pose(frame)
 
-    print(keypoints)
+    frame = output.draw_keypoints(frame, keypoints)
+
+    cv2.imwrite("output.jpg", frame)
 
 if __name__ == "__main__":
     main()

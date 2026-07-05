@@ -26,10 +26,16 @@ class PoseEstimator:
 
         self.interpreter.set_tensor(self.interpreter.get_input_details()[0]['index'], input_image)
         self.interpreter.invoke()
-        keypoints_with_scores = self.interpreter.get_tensor(self.interpreter.get_output_details()[0]['index'])[0][0]
+        keypoints = self.interpreter.get_tensor(self.interpreter.get_output_details()[0]['index'])[0][0]
 
-        print("Keypoints with scores:", keypoints_with_scores)
-
-        return keypoints_with_scores
+        return keypoints
     
+    def convert_keypoints(self, keypoints):
+        x_res = self.conf["OUTPUT_RESOLUTION"][0]
+        y_res = self.conf["OUTPUT_RESOLUTION"][1]
+
+        for kp in keypoints:
+            kp[1] = int(kp[1] * x_res)
+            kp[0] = int(kp[0] * y_res)
+
 
