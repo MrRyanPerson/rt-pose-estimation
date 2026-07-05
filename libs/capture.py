@@ -17,6 +17,7 @@ class PiCamera:
                 self.cap = cv2.VideoCapture(conf["CAMERA_PORT"])
                 self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, conf["CAMERA_RESOLUTION"][0])
                 self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, conf["CAMERA_RESOLUTION"][1])
+                time.sleep(2)
 
         logger.info("Camera initialized")
 
