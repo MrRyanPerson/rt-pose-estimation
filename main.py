@@ -17,7 +17,6 @@ def main():
 
     frame = camera.capture_frame()
 
-
     keypoints = pose_estimator.estimate_pose(frame)
 
     print(keypoints)
