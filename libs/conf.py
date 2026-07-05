@@ -6,7 +6,8 @@ def get_conf():
         "CAMERA_PORT": 0, # index of camera, can be blank if using PiCamera2
         "CAMERA_RESOLUTION": (1280, 720),
         "OUTPUT_RESOLUTION": (640, 480),
-        "MODEL_PATH": f"{os.getcwd()}/libs/models/movenet_lightning_int8.tflite",
+        "MODEL_PATH": f"{os.getcwd()}/libs/models/movenet_lightning_float16.tflite",
         "MIN_CONFIDENCE": 0.3,
+        "QUANTIZATION": "float16" # values: int8, float16
     }
     return config
