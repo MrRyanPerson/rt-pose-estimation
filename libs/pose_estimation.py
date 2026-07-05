@@ -15,13 +15,8 @@ class PoseEstimator:
         input_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         input_image = cv2.resize(input_image, (192, 192))
         input_image = numpy.expand_dims(input_image, axis=0)
-        match self.conf["QUANTIZATION"]:
-            case "int8":
-                input_image = input_image.astype(numpy.uint8)
-            case "float16":
-                input_image = input_image.astype(numpy.float16)
+        input_image = input_image.astype(numpy.uint8)
         
-
         return input_image
 
 
