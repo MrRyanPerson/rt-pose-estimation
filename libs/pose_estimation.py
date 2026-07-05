@@ -30,12 +30,4 @@ class PoseEstimator:
 
         return keypoints
     
-    def convert_keypoints(self, keypoints):
-        x_res = self.conf["OUTPUT_RESOLUTION"][0]
-        y_res = self.conf["OUTPUT_RESOLUTION"][1]
-
-        for kp in keypoints:
-            kp[1] = int(kp[1] * x_res)
-            kp[0] = int(kp[0] * y_res)
-
 

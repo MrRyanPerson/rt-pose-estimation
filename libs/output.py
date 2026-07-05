@@ -25,6 +25,8 @@ class Output:
                     (5, 6), (5, 11), (6, 12), (11, 12), (11, 13), (13, 15), (12, 14), (14, 16)]
         # Draw lines connecting keypoints
         for connection in connections:
+            if keypoints[connection[0], 2] < self.conf["MIN_CONFIDENCE"] or keypoints[connection[1], 2] < self.conf["MIN_CONFIDENCE"]:
+                continue
             start_point = (int(keypoints[connection[0], 1] * self.conf["OUTPUT_RESOLUTION"][0]),
                            int(keypoints[connection[0], 0] * self.conf["OUTPUT_RESOLUTION"][1]))
             end_point = (int(keypoints[connection[1], 1] * self.conf["OUTPUT_RESOLUTION"][0]),
@@ -32,6 +34,8 @@ class Output:
             cv2.line(frame, start_point, end_point, (0, 0, 255), 8)  
 
         for kp in keypoints:
+            if kp[2] < self.conf["MIN_CONFIDENCE"]:
+                continue
             x = int(kp[1] * self.conf["OUTPUT_RESOLUTION"][0])
             y = int(kp[0] * self.conf["OUTPUT_RESOLUTION"][1])
             frame = cv2.circle(frame, (x, y), 5, (0, 255, 0), -1)
