@@ -35,6 +35,7 @@ class PiCamera:
                 self.picam2.stop()
             case "OpenCV":
                 self.cap.release()
+        logger.info("Camera closed")
 
 
 
