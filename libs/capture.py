@@ -29,6 +29,13 @@ class PiCamera:
                 ret, frame = self.cap.read()
         return frame
 
+    def close(self):
+        match self.conf["CAMERA_BACKEND"]:
+            case "PiCamera2":
+                self.picam2.stop()
+            case "OpenCV":
+                self.cap.release()
+
 
 
 

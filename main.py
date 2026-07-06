@@ -9,21 +9,27 @@ from libs.conf import get_conf
 from libs.output import Output
 
 def main():
-    logger.add("logs/app.log", rotation="100 MB")    
+    try:
+        logger.add("logs/app.log", rotation="100 MB")    
 
-    conf = get_conf()
+        conf = get_conf()
 
-    camera = PiCamera(conf)
-    pose_estimator = PoseEstimator(conf)
-    output = Output(conf)
+        camera = PiCamera(conf)
+        pose_estimator = PoseEstimator(conf)
+        output = Output(conf)
 
-    frame = camera.capture_frame()
 
-    keypoints = pose_estimator.estimate_pose(frame)
+        frame = camera.capture_frame()
 
-    frame = output.draw_keypoints(frame, keypoints)
+        keypoints = pose_estimator.estimate_pose(frame)
 
-    cv2.imwrite("output.jpg", frame)
+        frame = output.draw_keypoints(frame, keypoints)
+    except Exception as e:
+        logger.error(f"An error occurred: {e}")
+    finally:
+        camera.close()
+        logger.info("Application finished")
+
 
 if __name__ == "__main__":
     main()
