@@ -21,9 +21,17 @@ def main():
 
         video_writer = cv2.VideoWriter("test.mp4", cv2.VideoWriter_fourcc(*'mp4v'), 30.0, conf["OUTPUT_RESOLUTION"])
 
+        video_path = "input.mp4"
+        mode = input("Camera/Video mode? (c/v): ").lower()
 
         while True:
-            frame = camera.capture_frame()
+            if mode == "c":
+                frame = camera.capture_frame()
+            elif mode == "v":
+                frame = cv2.imread(video_path)
+            
+            if frame is None:
+                break
 
             keypoints = pose_estimator.estimate_pose(frame)
 
