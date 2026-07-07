@@ -1,3 +1,4 @@
+import sys
 from libs.libraries import load_dependencies
 
 PiCamera2, Interpreter, cv2, numpy, logger = load_dependencies()
@@ -18,15 +19,24 @@ def main():
         pose_estimator = PoseEstimator(conf)
         output = Output(conf)
 
+        video_writer = cv2.VideoWriter("test.mp4", cv2.VideoWriter_fourcc(*'mp4v'), 30.0, conf["OUTPUT_RESOLUTION"])
 
-        frame = camera.capture_frame()
 
-        keypoints = pose_estimator.estimate_pose(frame)
+        while True:
+            frame = camera.capture_frame()
 
-        frame = output.draw_keypoints(frame, keypoints)
+            keypoints = pose_estimator.estimate_pose(frame)
+
+            frame = output.draw_keypoints(frame, keypoints)
+
+            video_writer.write(frame)
+
+    except KeyboardInterrupt:
+        logger.info("Keyboard interrupt received. Exiting...")
     except Exception as e:
         logger.error(f"An error occurred: {e}")
     finally:
+        video_writer.release()
         camera.close()
         logger.info("Application finished")
 
