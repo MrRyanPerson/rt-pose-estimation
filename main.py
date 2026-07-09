@@ -1,4 +1,4 @@
-import sys
+import time
 from libs.libraries import load_dependencies
 
 PiCamera2, Interpreter, cv2, numpy, logger = load_dependencies()
@@ -19,24 +19,32 @@ def main():
         pose_estimator = PoseEstimator(conf)
         output = Output(conf)
 
-        video_writer = cv2.VideoWriter("test.mp4", cv2.VideoWriter_fourcc(*'mp4v'), 30.0, conf["OUTPUT_RESOLUTION"])
+        fps = 30.0
 
-        video_path = "input.mp4"
+        video_writer = cv2.VideoWriter("test.mp4", cv2.VideoWriter_fourcc(*'mp4v'), fps, conf["OUTPUT_RESOLUTION"])
+
         mode = input("Camera/Video mode? (c/v): ").lower()
-
         while True:
             if mode == "c":
                 frame = camera.capture_frame()
             elif mode == "v":
+                video_path = input("Enter the relative video path (input.mp4): ")
                 frame = cv2.imread(video_path)
             
             if frame is None:
                 break
+            start_time = time.time()
 
             keypoints = pose_estimator.estimate_pose(frame)
 
             frame = output.draw_keypoints(frame, keypoints)
 
+            end_time = time.time()
+            processing_time = end_time - start_time
+
+            if processing_time < 1.0 / fps:
+                time.sleep((1.0 / fps) - processing_time)
+            
             video_writer.write(frame)
 
     except KeyboardInterrupt:
